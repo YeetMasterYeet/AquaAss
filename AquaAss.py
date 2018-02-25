@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-import FMTK.py
+import dialogs
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton, QAction, QLineEdit, QMessageBox
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIcon

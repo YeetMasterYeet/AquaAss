@@ -83,4 +83,4 @@ class FMTKDialog(QDialog):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     dialog = FMTKDialog()
-sys.exit(dialog.exec_())
+    sys.exit(dialog.exec_())
