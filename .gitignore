@@ -46,5 +46,5 @@ __pycache__
 
 # App #
 #######
-log/*
+log/testlog.json
 .aquadata
