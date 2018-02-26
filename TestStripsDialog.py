@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog,
 import sys
 import datetime
 
-class Dialog(QDialog):
+class TestStripsDialog(QDialog):
     NumGridRows = 3
     NumButtons = 4
     GHBox = None
@@ -18,7 +18,8 @@ class Dialog(QDialog):
     NO3Box = None
  
     def __init__(self):
-        super(Dialog, self).__init__()
+        super(TestStripsDialog, self).__init__()
+        print("Initializing TestStripsDialog")
 
         self.GHBox = QComboBox()
         self.KHBox = QComboBox()
@@ -40,6 +41,8 @@ class Dialog(QDialog):
         self.setWindowTitle("Aquarium Data Form")
  
     def createFormGroupBox(self):
+        print("Creating Form GroupBox")
+
         self.formGroupBox = QGroupBox("5-in-1 Test Strips")
         layout = QFormLayout()
 
@@ -82,5 +85,5 @@ class Dialog(QDialog):
  
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    dialog = Dialog()
-sys.exit(dialog.exec_())
+    dialog = TestStripsDialog()
+    sys.exit(dialog.exec_())
