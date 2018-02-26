@@ -149,12 +149,12 @@ class AquaAss(QWidget):
     def createTempGroup(self):
         tempGroupBox = QGroupBox("Water Temperature")
 
-        prevTempLabel = QLabel("Most Recent Temperature Reading: " + self.prev_temp)
+        prevTempLabel = QLabel("Previous Reading: " + self.prev_temp)
         prevTempLabel.setStyleSheet("font-style:italic")
 
-        updateTempButton = QPushButton('Update Water Temperature')
+        updateTempButton = QPushButton('Update')
         updateTempButton.setToolTip('Update the temperature of the water in the aquarium')
-        updateTempButton.setFixedWidth(200)
+        updateTempButton.setFixedWidth(120)
         updateTempButton.clicked.connect(self.updateTemp_click)
 
         layout = QVBoxLayout()
