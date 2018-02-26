@@ -9,8 +9,6 @@ import sys
 import datetime
 
 class TestStripsDialog(QDialog):
-    NumGridRows = 3
-    NumButtons = 4
     GHBox = None
     KHBox = None
     pHBox = None
@@ -19,7 +17,6 @@ class TestStripsDialog(QDialog):
  
     def __init__(self):
         super(TestStripsDialog, self).__init__()
-        print("Initializing TestStripsDialog")
 
         self.GHBox = QComboBox()
         self.KHBox = QComboBox()
@@ -41,8 +38,6 @@ class TestStripsDialog(QDialog):
         self.setWindowTitle("Aquarium Data Form")
  
     def createFormGroupBox(self):
-        print("Creating Form GroupBox")
-
         self.formGroupBox = QGroupBox("5-in-1 Test Strips")
         layout = QFormLayout()
 
@@ -81,7 +76,23 @@ class TestStripsDialog(QDialog):
         print("  pH Level:\t\t" + self.pHBox.currentText()) 
         print("  Nitrite Level:\t" + self.NO2Box.currentText()) 
         print("  Nitrate Level:\t" + self.NO3Box.currentText()) 
+
+        self.writeTestStrips(self.GHBox.currentText(), self.KHBox.currentText(), self.pHBox.currentText(), self.NO2Box.currentText(), self.NO3Box.currentText())
+
         self.done(0)
+
+    def writeTestStrips(self, GH, KH, pH, NO2, NO3):
+        with open(".aquadata", "r") as fp:
+            tsLine   = fp.readline()
+            fmtkLine = fp.readline()
+            tempLine = fp.readline()
+
+        fmtkLine = GH + "," + KH + "," + pH + "," + NO2 + "," + NO3 + "\n"
+
+        with open(".aquadata", "w") as fp:
+            fp.write(tsLine)
+            fp.write(fmtkLine)
+            fp.write(tempLine)
  
 if __name__ == '__main__':
     app = QApplication(sys.argv)

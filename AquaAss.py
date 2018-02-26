@@ -1,46 +1,82 @@
 #!/usr/bin/python3
 
 import sys
-from FMTKDialog import *
+
+from FMTKDialog       import *
 from TestStripsDialog import *
 from UpdateTempDialog import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets  import *
+from PyQt5.QtCore     import *
+from PyQt5.QtGui      import *
 
 class AquaAss(QWidget):
-    prev_temp = "n/a";
 
-    ts_prev_GH = "n/a";
-    ts_prev_KH = "n/a";
-    ts_prev_pH = "n/a";
-    ts_prev_NO2 = "n/a";
-    ts_prev_NO3 = "n/a";
-
-    fmtk_prev_pH = "n/a";
+    # store previous temp
+    prev_temp      = "n/a";
+    # store previous test strip test values
+    ts_prev_GH     = "n/a";
+    ts_prev_KH     = "n/a";
+    ts_prev_pH     = "n/a";
+    ts_prev_NO2    = "n/a";
+    ts_prev_NO3    = "n/a";
+    # store previous fmtk test values
+    fmtk_prev_pH   = "n/a";
     fmtk_prev_HRpH = "n/a";
-    fmtk_prev_Amm = "n/a";
-    fmtk_prev_NO2 = "n/a";
-    fmtk_prev_NO3 = "n/a";
+    fmtk_prev_Amm  = "n/a";
+    fmtk_prev_NO2  = "n/a";
+    fmtk_prev_NO3  = "n/a";
 
-    def __init__(self, parent=None):
-        super(AquaAss, self).__init__(parent)
+    tsGroup = None
+    fmtkGroup = None
+    tempGroup = None
 
-        self.title = 'Aquarium Assistant v0.0.1'
-        self.left = 10
-        self.top = 10
-        self.width = 400
+    def __init__(self):
+        super(AquaAss, self).__init__()
+
+        self.title  = 'Aquarium Assistant v0.0.1'
+        self.left   = 10
+        self.top    = 10
+        self.width  = 400
         self.height = 300
+        self.drawMain()
 
+    def drawMain(self):
+        self.readPreviousValues()
+
+        self.tsGroup   = self.createTSGroup()
+        self.fmtkGroup = self.createFMTKGroup()
+        self.tempGroup = self.createTempGroup()
+ 
         grid = QGridLayout()
-        grid.addWidget(self.createTSGroup(), 0, 0)
-        grid.addWidget(self.createFMTKGroup(), 0, 1)
-        grid.addWidget(self.createTempGroup(), 1, 0)
+        grid.addWidget(self.tsGroup, 0, 0)
+        grid.addWidget(self.fmtkGroup, 0, 1)
+        grid.addWidget(self.tempGroup, 1, 0)
         self.setLayout(grid)
-
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.show()
+
+    def readPreviousValues(self):
+        print("Reading in previous values")
+
+        with open(".aquadata") as fp:
+            fmtkLine = fp.readline()
+            tsLine   = fp.readline()
+            tempLine = fp.readline()
+
+            self.ts_prev_GH  = tsLine.split(',')[0];
+            self.ts_prev_KH  = tsLine.split(',')[1];
+            self.ts_prev_pH  = tsLine.split(',')[2];
+            self.ts_prev_NO2 = tsLine.split(',')[3];
+            self.ts_prev_NO3 = tsLine.split(',')[4];
+            
+            self.fmtk_prev_pH    = fmtkLine.split(',')[0];
+            self.fmtk_prev_HRpH  = fmtkLine.split(',')[1];
+            self.fmtk_prev_Amm   = fmtkLine.split(',')[2];
+            self.fmtk_prev_NO2   = fmtkLine.split(',')[3];
+            self.fmtk_prev_NO3   = fmtkLine.split(',')[4];
+            
+            self.prev_temp = tempLine
 
     def createTSGroup(self):
         tsGroupBox = QGroupBox("5-in-1 Test Strips")
@@ -48,10 +84,15 @@ class AquaAss(QWidget):
         prevTestLabel = QLabel('Previous Test Results:')
         prevTestLabel.setStyleSheet("font-style:italic")
         prevTestLabelGH = QLabel('    GH Level: \t' + self.ts_prev_GH)
+        prevTestLabelGH.setStyleSheet("font-style:italic")
         prevTestLabelKH = QLabel('    KH Level: \t' + self.ts_prev_KH)
+        prevTestLabelKH.setStyleSheet("font-style:italic")
         prevTestLabelpH = QLabel('    pH Level: \t' + self.ts_prev_pH)
+        prevTestLabelpH.setStyleSheet("font-style:italic")
         prevTestLabelNO2 = QLabel('    Nitrite Level: \t' + self.ts_prev_NO2)
+        prevTestLabelNO2.setStyleSheet("font-style:italic")
         prevTestLabelNO3 = QLabel('    Nitrate Level: \t' + self.ts_prev_NO3) 
+        prevTestLabelNO3.setStyleSheet("font-style:italic")
 
         testStripsButton = QPushButton('Run 5-in-1 Test')
         testStripsButton.setToolTip('Import the results from a test strip testing.')
@@ -77,11 +118,16 @@ class AquaAss(QWidget):
 
         prevTestLabel = QLabel("Previous Test Results:")
         prevTestLabel.setStyleSheet("font-style:italic")
-        prevTestLabelpH = QLabel('pH Level: \t' + self.fmtk_prev_pH)
-        prevTestLabelHRpH = QLabel('HRpH Level: \t' + self.fmtk_prev_HRpH)
-        prevTestLabelAmm = QLabel('Ammonia Level: \t' + self.fmtk_prev_Amm)
-        prevTestLabelNO2 = QLabel('Nitrite Level: \t' + self.fmtk_prev_NO2)
-        prevTestLabelNO3 = QLabel('Nitrate Level: \t' + self.fmtk_prev_NO3)
+        prevTestLabelpH = QLabel('    pH Level: \t\t' + self.fmtk_prev_pH)
+        prevTestLabelpH.setStyleSheet("font-style:italic")
+        prevTestLabelHRpH = QLabel('    HRpH Level: \t\t' + self.fmtk_prev_HRpH)
+        prevTestLabelHRpH.setStyleSheet("font-style:italic")
+        prevTestLabelAmm = QLabel('    Ammonia Level: \t' + self.fmtk_prev_Amm)
+        prevTestLabelAmm.setStyleSheet("font-style:italic")
+        prevTestLabelNO2 = QLabel('    Nitrite Level: \t\t' + self.fmtk_prev_NO2)
+        prevTestLabelNO2.setStyleSheet("font-style:italic")
+        prevTestLabelNO3 = QLabel('    Nitrate Level: \t\t' + self.fmtk_prev_NO3)
+        prevTestLabelNO3.setStyleSheet("font-style:italic")
 
         FMTKButton = QPushButton('Run FMTK Test')
         FMTKButton.setToolTip('Import the results from a master tesk kit testing.')
@@ -125,16 +171,22 @@ class AquaAss(QWidget):
     def testStrips_click(self):
         tsDialog = TestStripsDialog()
         tsDialog.exec_()
+        self.close()
+        self.__init__()
 
     @pyqtSlot()
     def FMTK_click(self):
         fmtkDialog = FMTKDialog()
         fmtkDialog.exec_()
+        self.close()
+        self.__init__()
 
     @pyqtSlot()
     def updateTemp_click(self):
         utDialog = UpdateTempDialog()
         utDialog.exec_()
+        self.close()
+        self.__init__()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

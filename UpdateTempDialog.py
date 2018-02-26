@@ -9,13 +9,10 @@ import sys
 import datetime
 
 class UpdateTempDialog(QDialog):
-    NumGridRows = 1
-    NumButtons = 4
     WaterTempBox = None
  
     def __init__(self):
         super(UpdateTempDialog, self).__init__()
-        print("Initializing UpdateTempDialog")
 
         self.WaterTempBox = QLineEdit()
 
@@ -33,8 +30,6 @@ class UpdateTempDialog(QDialog):
         self.setWindowTitle("Aquarium Data Form")
  
     def createFormGroupBox(self):
-        print("Creating Form GroupBox")
-
         self.formGroupBox = QGroupBox("Update Water Temperature")
         layout = QFormLayout()
 
@@ -44,9 +39,26 @@ class UpdateTempDialog(QDialog):
     def accept(self):
         date = datetime.datetime.now()
         print("\nWater Temperature - " + str(date))
-        print("  Temperature (F):\t\t" + self.WaterTempBox.text()) 
+
+        temperature = self.WaterTempBox.text()
+        print("  Temperature (F):\t\t" + temperature) 
+
+        self.writeTemperature(temperature)
+
         self.done(0)
- 
+
+    def writeTemperature(self, temp):
+        with open(".aquadata", "r") as fp:
+            tsLine   = fp.readline()
+            fmtkLine = fp.readline()
+            tempLine = fp.readline()
+
+        with open(".aquadata", "w") as fp:
+            fp.write(tsLine)
+            fp.write(fmtkLine)
+            fp.write(temp)
+            fp.write("\n")
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     dialog = UpdateTempDialog()

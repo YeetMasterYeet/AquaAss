@@ -9,8 +9,6 @@ import sys
 import datetime
 
 class FMTKDialog(QDialog):
-    NumGridRows = 3
-    NumButtons = 4
     phBox = None
     HRphBox = None
     AmmBox = None
@@ -78,7 +76,23 @@ class FMTKDialog(QDialog):
         print("  Ammonia Level:\t" + self.AmmBox.currentText()) 
         print("  Nitrite Level:\t" + self.NO2Box.currentText()) 
         print("  Nitrate Level:\t" + self.NO3Box.currentText()) 
+
+        self.writeFMTK(self.phBox.currentText(), self.HRphBox.currentText(), self.AmmBox.currentText(), self.NO2Box.currentText(), self.NO3Box.currentText())
+
         self.done(0)
+
+    def writeFMTK(self, pH, HRpH, Amm, NO2, NO3):
+        with open(".aquadata", "r") as fp:
+            tsLine   = fp.readline()
+            fmtkLine = fp.readline()
+            tempLine = fp.readline()
+
+        tsLine = pH + "," + HRpH + "," + Amm + "," + NO2 + "," + NO3 + "\n"
+
+        with open(".aquadata", "w") as fp:
+            fp.write(tsLine)
+            fp.write(fmtkLine)
+            fp.write(tempLine)
  
 if __name__ == '__main__':
     app = QApplication(sys.argv)

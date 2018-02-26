@@ -39,7 +39,9 @@ Thumbs.db
 # Python #
 ##########
 __pycache__
+.aquadata
 
 # VIM #
 #######
 *.swp
+
