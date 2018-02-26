@@ -57,8 +57,6 @@ class AquaAss(QWidget):
         self.show()
 
     def readPreviousValues(self):
-        print("Reading in previous values")
-
         with open(".aquadata") as fp:
             fmtkLine = fp.readline()
             tsLine   = fp.readline()
@@ -170,22 +168,22 @@ class AquaAss(QWidget):
     @pyqtSlot()
     def testStrips_click(self):
         tsDialog = TestStripsDialog()
-        tsDialog.exec_()
         self.close()
+        tsDialog.exec_()
         self.__init__()
 
     @pyqtSlot()
     def FMTK_click(self):
         fmtkDialog = FMTKDialog()
-        fmtkDialog.exec_()
         self.close()
+        fmtkDialog.exec_()
         self.__init__()
 
     @pyqtSlot()
     def updateTemp_click(self):
         utDialog = UpdateTempDialog()
-        utDialog.exec_()
         self.close()
+        utDialog.exec_()
         self.__init__()
 
 if __name__ == '__main__':

@@ -10,6 +10,17 @@ import datetime
 
 class UpdateTempDialog(QDialog):
     WaterTempBox = None
+    jsonTemplate = """{
+    "test":   "Temperature Update",
+    "date":   "TEST_DATE",
+    "results": [
+        {
+            "title": "Temperature",
+            "value": "TEMP_VALUE"
+        }
+    ]
+},
+"""
  
     def __init__(self):
         super(UpdateTempDialog, self).__init__()
@@ -37,7 +48,7 @@ class UpdateTempDialog(QDialog):
         self.formGroupBox.setLayout(layout)
 
     def accept(self):
-        date = datetime.datetime.now()
+        date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print("\nWater Temperature - " + str(date))
 
         temperature = self.WaterTempBox.text()
@@ -58,6 +69,13 @@ class UpdateTempDialog(QDialog):
             fp.write(fmtkLine)
             fp.write(temp)
             fp.write("\n")
+
+        with open("log/testlog.json", "a") as fp:
+            json = self.jsonTemplate
+            date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            json = json.replace("TEST_DATE", date)
+            json = json.replace("TEMP_VALUE", temp)
+            fp.write(json)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
