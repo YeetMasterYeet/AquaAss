@@ -2,6 +2,7 @@
 
 import sys
 
+from pathlib import Path
 from FMTKDialog       import *
 from TestStripsDialog import *
 from UpdateTempDialog import *
@@ -57,24 +58,32 @@ class AquaAss(QWidget):
         self.show()
 
     def readPreviousValues(self):
-        with open(".aquadata") as fp:
-            fmtkLine = fp.readline()
-            tsLine   = fp.readline()
-            tempLine = fp.readline()
+        file = Path(".aquadata")
+        if file.is_file():
+            with open(".aquadata", "r") as fp:
+                fmtkLine = fp.readline()
+                tsLine   = fp.readline()
+                tempLine = fp.readline()
+    
+                self.ts_prev_GH  = tsLine.split(',')[0];
+                self.ts_prev_KH  = tsLine.split(',')[1];
+                self.ts_prev_pH  = tsLine.split(',')[2];
+                self.ts_prev_NO2 = tsLine.split(',')[3];
+                self.ts_prev_NO3 = tsLine.split(',')[4];
+                
+                self.fmtk_prev_pH    = fmtkLine.split(',')[0];
+                self.fmtk_prev_HRpH  = fmtkLine.split(',')[1];
+                self.fmtk_prev_Amm   = fmtkLine.split(',')[2];
+                self.fmtk_prev_NO2   = fmtkLine.split(',')[3];
+                self.fmtk_prev_NO3   = fmtkLine.split(',')[4];
+                
+                self.prev_temp = tempLine
+        else:
+            with open(".aquadata", "w") as fp:
+                fp.write("'n/a','n/a','n/a','n/a','n/a'\n")
+                fp.write("'n/a','n/a','n/a','n/a','n/a'\n")
+                fp.write("'n/a'\n")
 
-            self.ts_prev_GH  = tsLine.split(',')[0];
-            self.ts_prev_KH  = tsLine.split(',')[1];
-            self.ts_prev_pH  = tsLine.split(',')[2];
-            self.ts_prev_NO2 = tsLine.split(',')[3];
-            self.ts_prev_NO3 = tsLine.split(',')[4];
-            
-            self.fmtk_prev_pH    = fmtkLine.split(',')[0];
-            self.fmtk_prev_HRpH  = fmtkLine.split(',')[1];
-            self.fmtk_prev_Amm   = fmtkLine.split(',')[2];
-            self.fmtk_prev_NO2   = fmtkLine.split(',')[3];
-            self.fmtk_prev_NO3   = fmtkLine.split(',')[4];
-            
-            self.prev_temp = tempLine
 
     def createTSGroup(self):
         tsGroupBox = QGroupBox("5-in-1 Test Strips")
@@ -114,17 +123,17 @@ class AquaAss(QWidget):
     def createFMTKGroup(self):
         FMTKGroupBox = QGroupBox("Freshwater Master Test Kit")
 
-        prevTestLabel = QLabel("Previous Test Results:")
+        prevTestLabel     = QLabel("Previous Test Results:")
         prevTestLabel.setStyleSheet("font-style:italic")
-        prevTestLabelpH = QLabel('    pH Level: \t\t' + self.fmtk_prev_pH)
+        prevTestLabelpH   = QLabel('    pH Level: \t\t' + self.fmtk_prev_pH)
         prevTestLabelpH.setStyleSheet("font-style:italic")
         prevTestLabelHRpH = QLabel('    HRpH Level: \t\t' + self.fmtk_prev_HRpH)
         prevTestLabelHRpH.setStyleSheet("font-style:italic")
-        prevTestLabelAmm = QLabel('    Ammonia Level: \t' + self.fmtk_prev_Amm)
+        prevTestLabelAmm  = QLabel('    Ammonia Level: \t' + self.fmtk_prev_Amm)
         prevTestLabelAmm.setStyleSheet("font-style:italic")
-        prevTestLabelNO2 = QLabel('    Nitrite Level: \t\t' + self.fmtk_prev_NO2)
+        prevTestLabelNO2  = QLabel('    Nitrite Level: \t\t' + self.fmtk_prev_NO2)
         prevTestLabelNO2.setStyleSheet("font-style:italic")
-        prevTestLabelNO3 = QLabel('    Nitrate Level: \t\t' + self.fmtk_prev_NO3)
+        prevTestLabelNO3  = QLabel('    Nitrate Level: \t\t' + self.fmtk_prev_NO3)
         prevTestLabelNO3.setStyleSheet("font-style:italic")
 
         FMTKButton = QPushButton('Run FMTK Test')

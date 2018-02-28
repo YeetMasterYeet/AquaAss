@@ -48,3 +48,4 @@ __pycache__
 #######
 log/testlog.json
 .aquadata
+*.bkp
